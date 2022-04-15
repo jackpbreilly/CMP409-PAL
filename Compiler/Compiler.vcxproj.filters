@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\CompilerKit">
+      <UniqueIdentifier>{c0ca90ad-a27c-4ec1-b76d-4bccfdb4b8fd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CompilerKit\Codegen.cpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClCompile>
+    <ClCompile Include="CompilerKit\Error.cpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClCompile>
+    <ClCompile Include="CompilerKit\Parser.cpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClCompile>
+    <ClCompile Include="CompilerKit\Program.cpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClCompile>
+    <ClCompile Include="CompilerKit\Scanner.cpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClCompile>
+    <ClCompile Include="CompilerKit\Sema.cpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClCompile>
+    <ClCompile Include="PALScanner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PALParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PALSemantics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CompilerKit\Codegen.hpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClInclude>
+    <ClInclude Include="CompilerKit\Error.hpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClInclude>
+    <ClInclude Include="CompilerKit\Parser.hpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClInclude>
+    <ClInclude Include="CompilerKit\Program.hpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClInclude>
+    <ClInclude Include="CompilerKit\Scanner.hpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClInclude>
+    <ClInclude Include="CompilerKit\Sema.hpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClInclude>
+    <ClInclude Include="CompilerKit\Token.hpp">
+      <Filter>Source Files\CompilerKit</Filter>
+    </ClInclude>
+    <ClInclude Include="PALScanner.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PALParser.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PALSemantics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="main.txt" />
+  </ItemGroup>
+</Project>
