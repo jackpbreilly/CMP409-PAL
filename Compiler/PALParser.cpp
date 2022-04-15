@@ -10,16 +10,32 @@ void PALParser::recStarter() {
 void PALParser::recProgram() 
 {
    
+    //Scope::open();
+    //expect("PROGRAM");
+    //expect(Token::Identifier);
+    //expect("WITH");
+    //recVarDecls();
+    //expect("IN");
+    //recStatement();
+    //expect("END");
+    //Scope::close();
+
     Scope::open();
-    expect("PROGRAM");
-    expect(Token::Identifier); //program name - no semantic
-    expect("WITH");
-    recVarDecls();
-    expect("IN");
-    recStatement();
-    expect("END");
+    if (have("PROGRAM"))
+    {
+        expect("PROGRAM");
+        expect(Token::Identifier);
+        expect("WITH");
+        recVarDecls();
+        expect("IN");
+
+        do {
+            recStatement();
+        } while (have(Token::Identifier) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT"));
+
+        expect("END");
+    }
     Scope::close();
-    
 }
 
 
@@ -47,6 +63,7 @@ void PALParser::recVarDecls()
                 }
             }
         }
+
 }
 
 
@@ -69,14 +86,37 @@ std::vector<Token> PALParser::recIdentList()
 
 void PALParser::recStatement()
 {
-    do
+   /* do
     {
         if (have(Token::Identifier)) recAssignment();
         else if (have("UNTIL")) recLoop();
         else if (have("IF")) recConditional();
         else if (have("INPUT") || have("OUTPUT")) recIO();
         else syntaxError("<Statement>");
-    } while (have(Token::Identifier) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT"));
+    } while (have(Token::Identifier) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT"));*/
+
+
+    //semantics..ResetCurrentType();
+    if (have(Token::Identifier))
+    {
+        recAssignment();
+    }
+    else if (have("UNTIL"))
+    {
+        recLoop();
+    }
+    else if (have("IF"))
+    {
+        recConditional();
+    }
+    else if (have("INPUT") || have("OUTPUT"))
+    {
+        recIO();
+    }
+    else
+    {
+        syntaxError("<Statement>");
+    }
 }
 
 void PALParser::recAssignment()
@@ -90,31 +130,80 @@ void PALParser::recAssignment()
 
 Type PALParser::recExpression()
 {
-    auto type = recTerm();
-    Token op = current();
+    //auto type = recTerm();
+    //Token op = current();
 
-    // We could also do this recursively -- try and do it that way too!
-    while (match("+") || match("-")) {
-        auto rhs = recTerm();
-        type = semantics.checkExpression(type, op, rhs);
-        op = current();
+    //// We could also do this recursively -- try and do it that way too!
+    //while (match("+") || match("-")) {
+    //    auto rhs = recTerm();
+    //    type = semantics.checkExpression(type, op, rhs);
+    //    op = current();
+    //}
+    //return type;
+
+    Type type = recTerm();
+
+    while (have("+") || have("-"))
+    {
+        if (have("+"))
+        {
+            expect("+");
+        }
+        else if (have("-"))
+        {
+            expect("-");
+        }
+
+        Token exprToken = current();
+        Type termType2 = recTerm();
+
+        type = semantics.checkExpression(type, exprToken, termType2);
     }
+
     return type;
 }
 
 Type PALParser::recTerm() {
-    auto type = recFactor();
-    Token op = current();
-    while (match("*") || match("/")) {
-        auto rhs = recFactor();
-        type = semantics.checkExpression(type, op, rhs);
-        op = current();
+    //auto type = recFactor();
+    //Token op = current();
+    //while (match("*") || match("/")) {
+    //    auto rhs = recFactor();
+    //    type = semantics.checkExpression(type, op, rhs);
+    //    op = current();
+    //}
+    //return type;
+
+    Token termToken1 = current();
+    Type factType = recFactor();
+
+    while (have("*") || have("/"))
+    {
+        if (have("*"))
+        {
+            expect("*");
+        }
+        else if (have("/"))
+        {
+            expect("/");
+        }
+
+        Token termToken = termToken1 = current();
+        Type factType2 = recFactor();
+
+
+        if (factType != Type::Invalid)
+        {
+            semantics.checkExpression(factType, termToken1, factType2);
+        }
     }
-    return type;
+
+    return factType;
+
+
 }
 
 Type PALParser::recFactor() {
-    if (have(Token::Identifier)) {
+   /* if (have(Token::Identifier)) {
         Token var = current();
         expect(Token::Identifier);
         return semantics.checkVariable(var);
@@ -133,10 +222,77 @@ Type PALParser::recFactor() {
     else {
         syntaxError("<factor>");
         return Type::Invalid;
+    }*/
+
+    if (have("+")) {
+        expect("+");
+    }
+    else if (have("-"))
+    {
+        expect("-");
+    }
+
+    if (have(Token::Identifier) || have(Token::Real) || have(Token::Integer))
+    {
+        Type valType = recValue();
+        return valType;
+    }
+    else if (have("("))
+    {
+        expect("(");
+        Type exprType = recExpression();
+        expect(")");
+        return exprType;
+    }
+    else
+    {
+        syntaxError("Value or Expression");
+        return semantics.variableType(current());
     }
 }
 
+Type PALParser::recValue() {
+    Type valType;
+
+    if (have(Token::Identifier))
+    {
+        valType = semantics.variableType(current());
+        expect(Token::Identifier);
+    }
+    else if (have(Token::Integer))
+    {
+        valType = semantics.variableType(current());
+        expect(Token::Integer);
+    }
+    else if (have(Token::Real))
+    {
+        valType = semantics.variableType(current());
+        expect(Token::Real);
+    }
+    else
+    {
+        valType = semantics.variableType(current());
+    }
+
+    return valType;
+}
+
 void PALParser::recLoop() {
+    //Type booleanExpr = recBooleanExpr();
+    //expect("REPEAT");
+
+    //if (booleanExpr != Type::Invalid)
+    //{
+    //    while (have(Token::Identifier) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT"))
+    //    {
+    //        recStatement();
+    //    }
+    //}
+
+
+    //expect("ENDLOOP");
+
+    expect("UNTIL");
     Type booleanExpr = recBooleanExpr();
     expect("REPEAT");
 
@@ -150,26 +306,76 @@ void PALParser::recLoop() {
 
 
     expect("ENDLOOP");
+
 }
 
 Type PALParser::recBooleanExpr()
 {
-    auto type = recExpression();
-    Token op = current();
+    //auto type = recExpression();
+    //Token op = current();
 
-    if (match("<") || match("=") || match(">")) {
-        auto rhs = recExpression();
-        type = semantics.checkExpression(type, op, rhs);
+    //if (match("<") || match("=") || match(">")) {
+    //    auto rhs = recExpression();
+    //    type = semantics.checkExpression(type, op, rhs);
+    //}
+    //return type;
+
+    Type exprType = recExpression();
+    if (have("<"))
+    {
+        expect("<");
     }
-    return type;
+    else if (have("="))
+    {
+        expect("=");
+    }
+    else if (have(">"))
+    {
+        expect(">");
+    }
+
+    Token boolToken = current();
+    Type exprType2 = recExpression();
+
+    Type booleanExprType = Type::Invalid;
+
+    if (exprType != Type::Invalid)
+    {
+        booleanExprType = semantics.checkExpression(exprType, boolToken, exprType2);
+    }
+
+    return booleanExprType;
 }
 
 void PALParser::recConditional() {
-    recBooleanExpr();
+    //recBooleanExpr();
+    //expect("THEN");
+    //while (have(Token::Identifier) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT"))
+    //{
+    //    recStatement();
+    //}
+
+    //if (have("ELSE"))
+    //{
+    //    expect("ELSE");
+    //    while (have(Token::Identifier) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT"))
+    //    {
+    //        recStatement();
+    //    }
+    //}
+
+    //expect("ENDIF");
+
+    expect("IF");
+    Type booleanExpr = recBooleanExpr();
     expect("THEN");
-    while (have(Token::Identifier) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT"))
+
+    if (booleanExpr != Type::Invalid)
     {
-        recStatement();
+        while (have(Token::Identifier) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT"))
+        {
+            recStatement();
+        }
     }
 
     if (have("ELSE"))
@@ -191,7 +397,7 @@ void PALParser::recIO()
         expect("INPUT");
         std::vector<Token> identLists = recIdentList();
         for (Token token : identLists){
-          
+            semantics.checkVariable(token);
         }
         }
     else if (have("OUTPUT"))

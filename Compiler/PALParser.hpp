@@ -25,6 +25,7 @@ private:
     Type recExpression();
     Type recTerm();
     Type recFactor();
+    Type recValue();
     void recLoop();
     Type recBooleanExpr();
     void recConditional();
